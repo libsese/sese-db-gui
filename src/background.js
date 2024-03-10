@@ -4,7 +4,7 @@ import {app, protocol, ipcMain, BrowserWindow} from 'electron'
 import {createProtocol} from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, {VUEJS3_DEVTOOLS} from 'electron-devtools-installer'
 
-
+const path = require('path')
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // Scheme must be registered before the app is ready
@@ -19,11 +19,13 @@ async function createWindow() {
     height: 600,
     title: '数据库管理器',
     frame: false,
+    icon: path.join(__dirname, '../public/logo.ico'),
     webPreferences: {
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
       nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
-      contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION
+      contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION,
+      enableRemoteModule: true
     }
   })
 
@@ -43,6 +45,13 @@ async function createWindow() {
       win.setEnabled(true);
     }, 100) //延时太快会立刻启动，太慢会妨碍窗口其他操作，可自行测试最佳时间
     return true
+  })
+
+  win.on('maximize', () => {
+    win.webContents.send('on-maximize')
+  })
+  win.on('unmaximize', () => {
+    win.webContents.send('on-unmaximize')
   })
 
   return win
@@ -101,20 +110,15 @@ ipcMain.on("window-close", () => {
   const mainWindow = BrowserWindow.getFocusedWindow()
   mainWindow.close()
 })
-ipcMain.handle("window-max", () => {
+ipcMain.on("window-max", () => {
   const mainWindow = BrowserWindow.getFocusedWindow()
   if (mainWindow.isMaximized()) {
     mainWindow.unmaximize()
   } else {
     mainWindow.maximize()
   }
-  return mainWindow.isMaximized()
 })
 ipcMain.on("window-min", () => {
   const mainWindow = BrowserWindow.getFocusedWindow()
   mainWindow.minimize()
-})
-ipcMain.on("window-restore", () => {
-  const mainWindow = BrowserWindow.getFocusedWindow()
-  mainWindow.unmaximize()
 })
