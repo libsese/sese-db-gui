@@ -18,12 +18,18 @@ module.exports = defineConfig({
             {
               target: 'nsis',
               arch: ['x64']
+            },
+            {
+              target: 'portable',
+              arch: ['x64']
             }
           ]
         },
         nsis: {
+          artifactName: '${productName}-${platform}-${arch}-${version}-nsis.${ext}',
           oneClick: false,
           perMachine: false,
+          allowElevation: true,
           allowToChangeInstallationDirectory: true,
           deleteAppDataOnUninstall: true,
           createDesktopShortcut: false,

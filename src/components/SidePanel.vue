@@ -1,11 +1,11 @@
 <template>
   <div id="side-panel-box">
     <div id="side-panel-avatar-box">
-      <el-tooltip effect="dark" content="关于">
-        <div id="side-panel-avatar">
-          <el-avatar :src=logo size="large"/>
-        </div>
-      </el-tooltip>
+      <div id="side-panel-avatar">
+        <el-tooltip effect="dark" content="关于">
+          <img :src=logo alt="" id="side-panel-avatar-el"/>
+        </el-tooltip>
+      </div>
     </div>
     <el-tree id="side-panel-tree">
     </el-tree>
@@ -14,13 +14,12 @@
 
 <script>
 import {defineComponent} from 'vue'
-import {ElAvatar, ElTree, ElTooltip} from 'element-plus'
+import {ElTree, ElTooltip} from 'element-plus'
 import logo from '@/assets/logo.svg'
 
 export default defineComponent({
   name: 'SidePanel',
   components: {
-    ElAvatar,
     ElTree,
     ElTooltip
   },
@@ -49,6 +48,16 @@ export default defineComponent({
   width: 160px;
   height: 120px;
   background: gray;
+}
+
+#side-panel-avatar-el {
+  width: 64px;
+  height: 64px;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+  -webkit-app-region: no-drag;
+  cursor: default;
+  border-radius: 50%;
 }
 
 #side-panel-tree {

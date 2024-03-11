@@ -115,7 +115,6 @@ ipcRenderer.on('on-unmaximize', () => {
   display: flex;
   justify-content: center;
   align-items: center;
-  -webkit-app-region: no-drag;
   width: 50px;
   height: 30px;
   border: none;
@@ -124,5 +123,9 @@ ipcRenderer.on('on-unmaximize', () => {
 .app-window-icon {
   width: 20px;
   height: 11px;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+  -webkit-app-region: no-drag;
+  cursor: default;
 }
 </style>
