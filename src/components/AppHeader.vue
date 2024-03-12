@@ -1,29 +1,14 @@
 <template>
-  <div id="app-header-box">
-    <button class="app-window-button"
-            v-on:mouseenter="on_mouse_enter_close"
-            v-on:mouseleave="on_mouse_leave_close"
-            v-on:mousedown="on_mouse_down_close"
-            :style="{background: closeButtonBackground}"
-            v-on:click="on_click_close">
+  <div class="app-header-box">
+    <div class="app-window-close-button" v-on:click="on_click_close">
       <img class="app-window-icon" :src=window_close alt="">
-    </button>
-    <button class="app-window-button"
-            v-on:mouseenter="on_mouse_enter_max"
-            v-on:mouseleave="on_mouse_leave_max"
-            v-on:mousedown="on_mouse_down_max"
-            :style="{background: maxButtonBackground}"
-            v-on:click="on_click_max">
-      <img class="app-window-icon" ref="window_max_button" id="window_max_button" :src=window_max alt=""/>
-    </button>
-    <button class="app-window-button"
-            v-on:mouseenter="on_mouse_enter_min"
-            v-on:mouseleave="on_mouse_leave_min"
-            v-on:mousedown="on_mouse_down_min"
-            :style="{background: hideButtonBackground}"
-            v-on:click="on_click_min">
+    </div>
+    <div class="app-window-button" v-on:click="on_click_max">
+      <img class="app-window-icon" ref="window_max_button" :src=window_max alt=""/>
+    </div>
+    <div class="app-window-button" v-on:click="on_click_min">
       <img class="app-window-icon" :src=window_min alt="">
-    </button>
+    </div>
   </div>
 </template>
 
@@ -54,38 +39,11 @@ export default defineComponent({
     };
   },
   methods: {
-    on_mouse_enter_close() {
-      this.closeButtonBackground = '#c42b1c'
-    },
-    on_mouse_leave_close() {
-      this.closeButtonBackground = 'whitesmoke'
-    },
-    on_mouse_down_close() {
-      this.closeButtonBackground = '#b32c1d'
-    },
     on_click_close() {
       ipcRenderer.send('window-close')
     },
-    on_mouse_enter_max() {
-      this.maxButtonBackground = 'lightgray'
-    },
-    on_mouse_leave_max() {
-      this.maxButtonBackground = 'whitesmoke'
-    },
-    on_mouse_down_max() {
-      this.maxButtonBackground = 'gray'
-    },
     on_click_max() {
       ipcRenderer.send('window-max')
-    },
-    on_mouse_enter_min() {
-      this.hideButtonBackground = 'lightgray'
-    },
-    on_mouse_leave_min() {
-      this.hideButtonBackground = 'whitesmoke'
-    },
-    on_mouse_down_min() {
-      this.hideButtonBackground = 'gray'
     },
     on_click_min() {
       ipcRenderer.send('window-min')
@@ -103,7 +61,7 @@ ipcRenderer.on('on-unmaximize', () => {
 </script>
 
 <style>
-#app-header-box {
+.app-header-box {
   -webkit-app-region: drag;
   display: flex;
   flex-direction: row-reverse;
@@ -116,8 +74,16 @@ ipcRenderer.on('on-unmaximize', () => {
   justify-content: center;
   align-items: center;
   width: 50px;
-  height: 30px;
+  height: 100%;
   border: none;
+}
+
+.app-window-button:hover {
+  background-color: gainsboro;
+}
+
+.app-window-button:active {
+  background-color: lightgray;
 }
 
 .app-window-icon {
@@ -128,4 +94,25 @@ ipcRenderer.on('on-unmaximize', () => {
   -webkit-app-region: no-drag;
   cursor: default;
 }
+
+.app-window-button, .app-window-close-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 100%;
+}
+
+.app-window-close-button:hover {
+  background-color: red;
+}
+
+.app-window-close-button:active {
+  background-color: #c42b1c;
+}
+
+.app-window-close-button {
+  background-color: whitesmoke;
+}
+
 </style>

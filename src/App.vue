@@ -5,6 +5,7 @@
     </div>
     <div id="app-main-panel-box">
       <AppHeader/>
+      <PagePanel/>
     </div>
   </div>
 </template>
@@ -12,12 +13,14 @@
 <script>
 import AppHeader from "@/components/AppHeader.vue";
 import SidePanel from "@/components/SidePanel.vue";
+import PagePanel from "@/components/PagePanel.vue"
 
 export default {
   name: 'App',
   components: {
     SidePanel,
-    AppHeader
+    AppHeader,
+    PagePanel
   }
 }
 </script>

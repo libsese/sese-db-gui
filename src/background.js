@@ -17,9 +17,11 @@ async function createWindow() {
   const win = new BrowserWindow({
     width: 800,
     height: 600,
+    minWidth: 800,
+    minHeight: 600,
     title: '数据库管理器',
     frame: false,
-    icon: path.join(__dirname, '../public/logo.ico'),
+    icon: path.join(__dirname, '../public/logo.png'),
     webPreferences: {
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
