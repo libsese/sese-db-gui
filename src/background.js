@@ -1,8 +1,8 @@
 'use strict'
 
-import {app, protocol, ipcMain, BrowserWindow} from 'electron'
+import {app, protocol, BrowserWindow} from 'electron'
 import {createProtocol} from 'vue-cli-plugin-electron-builder/lib'
-import installExtension, {VUEJS3_DEVTOOLS} from 'electron-devtools-installer'
+// import installExtension, {VUEJS3_DEVTOOLS} from 'electron-devtools-installer'
 
 const path = require('path')
 const isDevelopment = process.env.NODE_ENV !== 'production'
@@ -20,7 +20,11 @@ async function createWindow() {
     minWidth: 800,
     minHeight: 600,
     title: '数据库管理器',
-    frame: false,
+    titleBarStyle: 'hidden',
+    titleBarOverlay: {
+      color: '#383a42',
+      symbolColor: 'white'
+    },
     icon: path.join(__dirname, '../public/logo.png'),
     webPreferences: {
       // Use pluginOptions.nodeIntegration, leave this alone
@@ -34,7 +38,9 @@ async function createWindow() {
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
     await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
-    if (!process.env.IS_TEST) win.webContents.openDevTools()
+    if (!process.env.IS_TEST) win.webContents.openDevTools({
+      mode: "detach"
+    })
   } else {
     createProtocol('app')
     // Load the index.html when not in development
@@ -47,13 +53,6 @@ async function createWindow() {
       win.setEnabled(true);
     }, 100) //延时太快会立刻启动，太慢会妨碍窗口其他操作，可自行测试最佳时间
     return true
-  })
-
-  win.on('maximize', () => {
-    win.webContents.send('on-maximize')
-  })
-  win.on('unmaximize', () => {
-    win.webContents.send('on-unmaximize')
   })
 
   return win
@@ -81,7 +80,7 @@ app.on('ready', async () => {
   if (isDevelopment && !process.env.IS_TEST) {
     // Install Vue Devtools
     try {
-      await installExtension(VUEJS3_DEVTOOLS)
+      // await installExtension(VUEJS3_DEVTOOLS)
     } catch (e) {
       console.error('Vue Devtools failed to install:', e.toString())
     }
@@ -103,24 +102,3 @@ if (isDevelopment) {
     })
   }
 }
-
-ipcMain.handle("is-window-max", () => {
-  const mainWindow = BrowserWindow.getFocusedWindow()
-  return mainWindow.isMaximized()
-})
-ipcMain.on("window-close", () => {
-  const mainWindow = BrowserWindow.getFocusedWindow()
-  mainWindow.close()
-})
-ipcMain.on("window-max", () => {
-  const mainWindow = BrowserWindow.getFocusedWindow()
-  if (mainWindow.isMaximized()) {
-    mainWindow.unmaximize()
-  } else {
-    mainWindow.maximize()
-  }
-})
-ipcMain.on("window-min", () => {
-  const mainWindow = BrowserWindow.getFocusedWindow()
-  mainWindow.minimize()
-})

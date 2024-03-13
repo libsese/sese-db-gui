@@ -50,7 +50,7 @@ export default defineComponent({
 })
 </script>
 
-<style>
+<style scoped>
 #side-panel-avatar {
   align-content: center;
   padding-top: 25px;
@@ -85,7 +85,9 @@ export default defineComponent({
   background: gray;
   color: snow;
 }
+</style>
 
+<style>
 /* 悬停颜色 */
 .el-tree-node__content:hover {
   background-color: lightgray;
@@ -100,5 +102,4 @@ export default defineComponent({
 .el-tree-node.is-current > .el-tree-node__content {
   background: lightgray;
 }
-
 </style>

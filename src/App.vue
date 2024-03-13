@@ -4,8 +4,9 @@
       <SidePanel/>
     </div>
     <div id="app-main-panel-box">
-      <AppHeader/>
+      <AppHeader :connect_callback="show_dialog"/>
       <PagePanel/>
+      <ConnectDialog ref="dialog" :callback="do_connect"/>
     </div>
   </div>
 </template>
@@ -14,13 +15,25 @@
 import AppHeader from "@/components/AppHeader.vue";
 import SidePanel from "@/components/SidePanel.vue";
 import PagePanel from "@/components/PagePanel.vue"
+import ConnectDialog from "@/components/ConnectDialog.vue";
 
 export default {
   name: 'App',
   components: {
     SidePanel,
     AppHeader,
-    PagePanel
+    PagePanel,
+    ConnectDialog
+  },
+  methods: {
+    show_dialog() {
+      this.$refs.dialog.dialog_visible = true;
+      this.$refs.dialog.disable = false
+    },
+    do_connect() {
+      this.$refs.dialog.disable = true
+      console.log(this.$refs.dialog.conn_info)
+    }
   }
 }
 </script>
@@ -42,7 +55,6 @@ html, body {
   margin: 0;
   padding: 0;
   overflow: hidden;
-  background: black;
 }
 
 #app-panel {
