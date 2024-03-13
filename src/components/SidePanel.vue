@@ -9,14 +9,17 @@
     </div>
     <el-tree
       id="side-panel-tree"
-      :props="treeProps"
+      node-key="id"
+      :props="tree_props"
       :data="data"
-    />
+      default-expanded-keys="[0, 100]"
+    >
+    </el-tree>
   </div>
 </template>
 
-<script lang="js">
-import {defineComponent} from 'vue'
+<script>
+import {defineComponent, ref} from 'vue'
 import {ElTree, ElTooltip} from 'element-plus'
 import logo from '@/assets/logo.svg'
 
@@ -27,24 +30,23 @@ export default defineComponent({
     ElTooltip
   },
   setup() {
+    const data = ref([
+      {
+        id: 0,
+        label: '尚未连接',
+        children: []
+      }
+    ])
+
+    const tree_props = {
+      label: 'label',
+      children: 'children',
+    }
+
     return {
       logo,
-    }
-  },
-  data() {
-    return {
-      data: [
-        {
-          label: '尚未连接',
-          disabled: true,
-          children: []
-        }
-      ],
-      treeProps: {
-        label: 'label',
-        children: 'children',
-        disabled: 'disabled'
-      }
+      data,
+      tree_props
     }
   }
 })
@@ -59,12 +61,12 @@ export default defineComponent({
 
 #side-panel-box {
   display: flow;
-  width: 160px;
+  width: 180px;
   height: 100vh;
 }
 
 #side-panel-avatar-box {
-  width: 160px;
+  width: 180px;
   height: 120px;
   background: gray;
 }
@@ -80,7 +82,7 @@ export default defineComponent({
 }
 
 #side-panel-tree {
-  width: 160px;
+  width: 180px;
   height: calc(100vh - 120px);
   background: gray;
   color: snow;

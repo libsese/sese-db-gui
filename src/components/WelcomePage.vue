@@ -1,5 +1,7 @@
 <template>
   <el-tab-pane label="欢迎">
+    <h1>感谢您的选择</h1>
+    <el-divider/>
     <h1>点击 + 连接到您的数据库</h1>
     <h3>Power by</h3>
     <h3>
@@ -18,12 +20,13 @@
 <script>
 import {shell} from 'electron'
 import {defineComponent} from 'vue'
-import {ElTabPane} from 'element-plus'
+import {ElTabPane, ElDivider} from 'element-plus'
 
 
 export default defineComponent({
   components: {
-    ElTabPane
+    ElTabPane,
+    ElDivider
   },
   methods: {
     open_url(url) {

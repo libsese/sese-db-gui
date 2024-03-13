@@ -7,9 +7,6 @@
   </el-tab-pane>
 </template>
 
-<script setup>
-</script>
-
 <script>
 import {defineComponent, ref} from 'vue'
 import {ElTabPane, ElTable} from 'element-plus'

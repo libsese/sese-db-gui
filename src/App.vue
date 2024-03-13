@@ -1,7 +1,7 @@
 <template>
   <div id="app-panel">
     <div id="app-side-panel-box">
-      <SidePanel/>
+      <SidePanel ref="tree"/>
     </div>
     <div id="app-main-panel-box">
       <AppHeader :connect_callback="show_dialog" :test_callback="test"/>
@@ -69,6 +69,26 @@ export default {
           comment: '凑合'
         }
       ]
+      this.$refs.tree.data = [
+        {
+          id: 1,
+          label: 'kaoru@127.0.0.1',
+          children: [
+            {
+              id: 2,
+              label: 'tb_user'
+            },
+            {
+              id: 3,
+              label: 'tb_pay'
+            },
+            {
+              id: 4,
+              label: 'tb_xxx'
+            }
+          ]
+        }
+      ]
     }
   }
 }
@@ -101,7 +121,7 @@ html, body {
 }
 
 #app-side-panel-box {
-  width: 160px;
+  width: 180px;
   height: 100vh;
 }
 
@@ -109,7 +129,7 @@ html, body {
   flex: 1;
   display: flex;
   flex-flow: column;
-  width: calc(100% - 160px);
+  width: calc(100% - 180px);
   height: 100vh;
 }
 </style>
