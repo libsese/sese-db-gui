@@ -2,7 +2,9 @@
   <div class="app-header-box">
     <el-button type="primary" class="app-button" @click="connect_callback">
       {{ connect_text }}
-      <img alt="" src=""/>
+    </el-button>
+    <el-button type="warning" class="app-button" @click="test_callback">
+      test
     </el-button>
   </div>
 </template>
@@ -17,7 +19,8 @@ export default defineComponent({
     ElButton
   },
   props: {
-    connect_callback: Function
+    connect_callback: Function,
+    test_callback: Function
   },
   setup() {
     const connect_text = '+';

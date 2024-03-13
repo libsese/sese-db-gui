@@ -4,8 +4,10 @@
       <SidePanel/>
     </div>
     <div id="app-main-panel-box">
-      <AppHeader :connect_callback="show_dialog"/>
-      <PagePanel/>
+      <AppHeader :connect_callback="show_dialog" :test_callback="test"/>
+      <PagePanel ref="pages">
+        <TablePage ref="table" header="测试"/>
+      </PagePanel>
       <ConnectDialog ref="dialog" :callback="do_connect"/>
     </div>
   </div>
@@ -16,6 +18,7 @@ import AppHeader from "@/components/AppHeader.vue";
 import SidePanel from "@/components/SidePanel.vue";
 import PagePanel from "@/components/PagePanel.vue"
 import ConnectDialog from "@/components/ConnectDialog.vue";
+import TablePage from "@/components/TablePage.vue";
 
 export default {
   name: 'App',
@@ -23,7 +26,8 @@ export default {
     SidePanel,
     AppHeader,
     PagePanel,
-    ConnectDialog
+    ConnectDialog,
+    TablePage
   },
   methods: {
     show_dialog() {
@@ -33,6 +37,38 @@ export default {
     do_connect() {
       this.$refs.dialog.disable = true
       console.log(this.$refs.dialog.conn_info)
+    },
+    test() {
+      this.$refs.table.columns = [
+        {
+          prop: 'name',
+          label: '姓名'
+        },
+        {
+          prop: 'age',
+          label: '年龄'
+        },
+        {
+          prop: 'comment',
+          label: '评论'
+        }
+      ]
+      this.$refs.table.data = [
+        {
+          name: 'Kaoru',
+          age: 23,
+          comment: '一般'
+        },
+        {
+          name: 'libsese',
+          age: 2,
+          comment: '还行'
+        }, {
+          name: 'sese-core',
+          age: 2,
+          comment: '凑合'
+        }
+      ]
     }
   }
 }
