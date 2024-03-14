@@ -1,0 +1,15 @@
+{
+  "name": "db-export",
+  "version-string": "0.0.1",
+  "license": "Apache-2.0",
+  "dependencies": [
+    {
+      "name": "sese-core",
+      "version>=": "1.4.0",
+      "default-features": false,
+      "features": [
+        "mysql"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "version": 6,
+  "configurePresets": [
+    {
+      "name": "msvc_x64",
+      "displayName": "Visual Studio 17 2022 Release",
+      "generator": "Visual Studio 17 2022",
+      "architecture": "x64",
+      "environment": {
+        "NAME": "kaoru",
+        "NODE_VER": "16.20.2",
+        "JS_VER": "7.3.0",
+        "DOTNET_CLI_FORCE_UTF8_ENCODING": "1"
+      },
+      "cacheVariables": {
+        "CMAKE_JS_VERSION": "$env{JS_VER}",
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_RUNTIME_OUTPUT_DIRECTORY": "${sourceDir}/build",
+        "CMAKE_MSVC_RUNTIME_LIBRARY": "MultiThreaded${dollar}<${dollar}<CONFIG:Debug>:Debug>",
+        "CMAKE_JS_INC": "C:\\Users\\$env{NAME}\\.cmake-js\\node-x64\\v$env{NODE_VER}\\include\\node",
+        "CMAKE_JS_SRC": "C:/Users/$env{NAME}/AppData/Roaming/npm/node_modules/cmake-js/lib/cpp/win_delay_load_hook.cc",
+        "NODE_RUNTIME": "node",
+        "NODE_RUNTIMEVERSION": "$env{NODE_VER}",
+        "NODE_ARCH": "x64",
+        "CMAKE_JS_LIB": "C:\\Users\\$env{NAME}\\.cmake-js\\node-x64\\v$env{NODE_VER}\\win-x64\\node.lib",
+        "CMAKE_SHARED_LINKER_FLAGS": "/DELAYLOAD:NODE.EXE"
+      }
+    }
+  ]
+}

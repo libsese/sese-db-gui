@@ -14,12 +14,14 @@
     "electron:build": "vue-cli-service electron:build",
     "electron:serve": "vue-cli-service electron:serve",
     "postinstall": "electron-builder install-app-deps",
-    "postuninstall": "electron-builder install-app-deps"
+    "postuninstall": "electron-builder install-app-deps",
+    "cmake:build": "cmake-js compile"
   },
   "main": "background.js",
   "dependencies": {
     "core-js": "^3.8.3",
     "element-plus": "^2.6.1",
+    "node-addon-api": "^8.0.0",
     "path": "^0.12.7",
     "vue": "^3.2.13"
   },
@@ -29,6 +31,7 @@
     "@vue/cli-plugin-babel": "~5.0.0",
     "@vue/cli-plugin-eslint": "~5.0.0",
     "@vue/cli-service": "~5.0.0",
+    "cmake-js": "^7.3.0",
     "electron": "^13.0.0",
     "electron-devtools-installer": "^3.2.0",
     "eslint": "^7.32.0",

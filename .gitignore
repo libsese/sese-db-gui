@@ -1,6 +1,8 @@
 .DS_Store
-node_modules
+/node_modules
 /dist
+/build
+/cmake-build-*
 
 
 # local env files
@@ -16,6 +18,7 @@ pnpm-debug.log*
 # Editor directories and files
 .idea
 .vscode
+.vs
 *.suo
 *.ntvs*
 *.njsproj
