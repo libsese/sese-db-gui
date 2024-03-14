@@ -8,11 +8,13 @@
       </div>
     </div>
     <el-tree
+      ref="tree"
       id="side-panel-tree"
       node-key="id"
       :props="tree_props"
       :data="data"
       default-expanded-keys="[0, 100]"
+      v-on:dblclick="click_callback"
     >
     </el-tree>
   </div>
@@ -28,6 +30,9 @@ export default defineComponent({
   components: {
     ElTree,
     ElTooltip
+  },
+  props: {
+    click_callback: Function
   },
   setup() {
     const data = ref([

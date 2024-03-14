@@ -1,5 +1,5 @@
 <template>
-  <el-dialog style="width: 300px;" v-model="dialog_visible" :modal="false" header="连接信息" v-loading="disable">
+  <el-dialog style="width: 280px;" v-model="dialog_visible" :modal="false" header="连接信息">
     <el-form label-width="auto">
       <el-form-item label="主机">
         <el-input v-model="conn_info.host" clearable :disabled="disable"/>

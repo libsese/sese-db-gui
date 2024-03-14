@@ -1,7 +1,7 @@
 <template>
   <div id="app-panel">
     <div id="app-side-panel-box">
-      <SidePanel ref="tree"/>
+      <SidePanel ref="side" :click_callback="do_click_tree"/>
     </div>
     <div id="app-main-panel-box">
       <AppHeader :connect_callback="show_dialog" :test_callback="test"/>
@@ -38,6 +38,10 @@ export default {
       this.$refs.dialog.disable = true
       console.log(this.$refs.dialog.conn_info)
     },
+    do_click_tree() {
+      const node = this.$refs.side.$refs.tree.getCurrentNode()
+      console.log(node)
+    },
     test() {
       this.$refs.table.columns = [
         {
@@ -69,7 +73,7 @@ export default {
           comment: '凑合'
         }
       ]
-      this.$refs.tree.data = [
+      this.$refs.side.data = [
         {
           id: 1,
           label: 'kaoru@127.0.0.1',
@@ -103,6 +107,7 @@ export default {
   user-select: none;
   text-align: center;
   color: #2c3e50;
+  overflow: hidden
 }
 
 html, body {
