@@ -22,6 +22,11 @@ add_library(${PROJECT_NAME} SHARED ${SOURCE_FILE} ${CMAKE_JS_SRC})
 # target_link_directories(${PROJECT_NAME} PRIVATE ${CMAKE_JS_INC})
 target_link_libraries(${PROJECT_NAME} PRIVATE ${CMAKE_JS_LIB})
 
+set_target_properties(
+        ${PROJECT_NAME} PROPERTIES
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/lib
+)
+
 # 依赖处理
 execute_process(COMMAND node -p "require('node-addon-api').include"
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
@@ -30,7 +35,7 @@ execute_process(COMMAND node -p "require('node-addon-api').include"
 string(REPLACE "\n" "" NODE_ADDON_API_DIR ${NODE_ADDON_API_DIR})
 string(REPLACE "\"" "" NODE_ADDON_API_DIR ${NODE_ADDON_API_DIR})
 target_include_directories(${PROJECT_NAME} PRIVATE ${NODE_ADDON_API_DIR})
-add_definitions(-DNAPI_VERSION=3)
+add_definitions(-DNAPI_VERSION=6)
 
 find_package(sese CONFIG REQUIRED)
 target_link_libraries(${PROJECT_NAME} PRIVATE Sese::Core)
