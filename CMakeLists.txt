@@ -7,12 +7,6 @@ sese_auto_find_vcpkg()
 project(DBExport)
 set(CMAKE_CXX_STANDARD 17)
 
-if (MSVC)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /utf-8")
-  set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} ")
-  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
-endif ()
-
 file(GLOB_RECURSE SOURCE_FILE "${CMAKE_CURRENT_LIST_DIR}/addon/*.cpp")
 
 include_directories(${CMAKE_JS_INC})

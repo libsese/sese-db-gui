@@ -13,21 +13,21 @@ public:
 
     static Napi::Object Init(Napi::Env env, Napi::Object exports) {
         Napi::Function func = DefineClass(
-            env,
-            "DateTime",
-            {
-                INSTANCE_FUNC(getYears),
-                INSTANCE_FUNC(getMonths),
-                INSTANCE_FUNC(getDays),
-                INSTANCE_FUNC(getMinutes),
-                INSTANCE_FUNC(getSeconds),
-                INSTANCE_FUNC(getMilliseconds),
-                INSTANCE_FUNC(getMicroseconds),
-                INSTANCE_FUNC(getUTC),
-                INSTANCE_FUNC(getDayOfWeek),
-                INSTANCE_FUNC(getDayOfYear),
-                INSTANCE_FUNC(getTimestamp)
-            }
+                env,
+                "DateTime",
+                {
+                        INSTANCE_FUNC(getYears),
+                        INSTANCE_FUNC(getMonths),
+                        INSTANCE_FUNC(getDays),
+                        INSTANCE_FUNC(getMinutes),
+                        INSTANCE_FUNC(getSeconds),
+                        INSTANCE_FUNC(getMilliseconds),
+                        INSTANCE_FUNC(getMicroseconds),
+                        INSTANCE_FUNC(getUTC),
+                        INSTANCE_FUNC(getDayOfWeek),
+                        INSTANCE_FUNC(getDayOfYear),
+                        INSTANCE_FUNC(getTimestamp)
+                }
         );
         constructor = Napi::Persistent(func);
         constructor.SuppressDestruct();
@@ -105,20 +105,20 @@ public:
 
     static Napi::Value Init(Napi::Env env, Napi::Object exports) {
         Napi::Function func = DefineClass(
-            env,
-            "ResultSet",
-            {
-                INSTANCE_FUNC(reset),
-                INSTANCE_FUNC(next),
-                INSTANCE_FUNC(getColumns),
-                INSTANCE_FUNC(getInteger),
-                INSTANCE_FUNC(getLong),
-                INSTANCE_FUNC(getString),
-                INSTANCE_FUNC(getDouble),
-                INSTANCE_FUNC(getFloat),
-                INSTANCE_FUNC(getDateTime),
-                INSTANCE_FUNC(isNull)
-            }
+                env,
+                "ResultSet",
+                {
+                        INSTANCE_FUNC(reset),
+                        INSTANCE_FUNC(next),
+                        INSTANCE_FUNC(getColumns),
+                        INSTANCE_FUNC(getInteger),
+                        INSTANCE_FUNC(getLong),
+                        INSTANCE_FUNC(getString),
+                        INSTANCE_FUNC(getDouble),
+                        INSTANCE_FUNC(getFloat),
+                        INSTANCE_FUNC(getDateTime),
+                        INSTANCE_FUNC(isNull)
+                }
         );
         constructor = Napi::Persistent(func);
         constructor.SuppressDestruct();
@@ -201,6 +201,61 @@ Napi::FunctionReference ResultSet::constructor{};
 
 #undef INSTANCE_FUNC
 
+class Metadata final : public Napi::ObjectWrap<Metadata> {
+public:
+    explicit Metadata(const Napi::CallbackInfo &info) : ObjectWrap(info) {}
+
+    static Napi::Object Init(Napi::Env env, Napi::Object exports) {
+        Napi::Function func = DefineClass(
+                env,
+                "Metadata",
+                {
+                        StaticValue("Text", Napi::Number::New(env, text_)),
+                        StaticValue("Boolean", Napi::Number::New(env, boolean_)),
+                        StaticValue("Char", Napi::Number::New(env, char_)),
+                        StaticValue("Short", Napi::Number::New(env, short_)),
+                        StaticValue("Integer", Napi::Number::New(env, integer_)),
+                        StaticValue("Long", Napi::Number::New(env, long_)),
+                        StaticValue("Float", Napi::Number::New(env, float_)),
+                        StaticValue("Double", Napi::Number::New(env, double_)),
+                        StaticValue("Date", Napi::Number::New(env, date_)),
+                        StaticValue("Time", Napi::Number::New(env, time_)),
+                        StaticValue("DateTime", Napi::Number::New(env, dateTime_)),
+                        StaticValue("Unknown", Napi::Number::New(env, unknown_))
+                }
+        );
+        exports.Set("Metadata", func); // NOLINT
+        return exports;
+    }
+
+private:
+    static int text_;
+    static int boolean_;
+    static int char_;
+    static int short_;
+    static int integer_;
+    static int long_;
+    static int float_;
+    static int double_;
+    static int date_;
+    static int time_;
+    static int dateTime_;
+    static int unknown_;
+};
+
+int Metadata::text_ = static_cast<int>(sese::db::MetadataType::Text);
+int Metadata::boolean_ = static_cast<int>(sese::db::MetadataType::Boolean);
+int Metadata::char_ = static_cast<int>(sese::db::MetadataType::Char);
+int Metadata::short_ = static_cast<int>(sese::db::MetadataType::Short);
+int Metadata::integer_ = static_cast<int>(sese::db::MetadataType::Integer);
+int Metadata::long_ = static_cast<int>(sese::db::MetadataType::Long);
+int Metadata::float_ = static_cast<int>(sese::db::MetadataType::Float);
+int Metadata::double_ = static_cast<int>(sese::db::MetadataType::Double);
+int Metadata::date_ = static_cast<int>(sese::db::MetadataType::Date);
+int Metadata::time_ = static_cast<int>(sese::db::MetadataType::Time);
+int Metadata::dateTime_ = static_cast<int>(sese::db::MetadataType::DateTime);
+int Metadata::unknown_ = static_cast<int>(sese::db::MetadataType::Unknown);
+
 #define INSTANCE_FUNC(name) InstanceMethod(#name, &PreparedStatement::name)
 
 class PreparedStatement final : public Napi::ObjectWrap<PreparedStatement> {
@@ -209,12 +264,12 @@ public:
 
     static Napi::Object Init(Napi::Env env, Napi::Object exports) {
         Napi::Function func = DefineClass(
-            env,
-            "PreparedStatement",
-            {
-                INSTANCE_FUNC(executeQuery),
-                INSTANCE_FUNC(executeUpdate)
-            }
+                env,
+                "PreparedStatement",
+                {
+                        INSTANCE_FUNC(executeQuery),
+                        INSTANCE_FUNC(executeUpdate)
+                }
         );
         constructor = Napi::Persistent(func);
         constructor.SuppressDestruct();
@@ -232,8 +287,7 @@ public:
         if (!res) {
             return {};
         }
-        auto raw = res.get();
-        res.reset();
+        auto raw = res.release();
         return ResultSet::constructor.New({Napi::External<sese::db::ResultSet>::New(info.Env(), raw)});
     }
 
@@ -288,15 +342,18 @@ public:
         // auto value = info[1].As<Napi::ObjectWrap<DateTime>>();
         // auto res = prepared_statement_->setDateTime(index, *value);
         // return Napi::Boolean::New(info.Env(), res);
+        // todo 内部实例化
         return {};
     }
 
     EXPORT_FUNC(getColumnType) {
         auto index = info[0].As<Napi::Number>().Uint32Value();
-        auto type = new sese::db::MetadataType();
-        auto rt = prepared_statement_->getColumnType(index, *type);
-        // todo 导出枚举
-        return {};
+        sese::db::MetadataType data;
+        auto rt = prepared_statement_->getColumnType(index, data);
+        if (!rt) {
+            return {};
+        }
+        return Napi::Number::New(info.Env(), static_cast<int>(data));
     }
 
 private:
@@ -305,31 +362,46 @@ private:
 
 Napi::FunctionReference PreparedStatement::constructor{};
 
-// class Connect final : public Napi::ObjectWrap<Connect> {
-// public:
-//     static Napi::Object Init(Napi::Env env, Napi::Object exports) {
-//         Napi::Function func = DefineClass(
-//             env,
-//             "Connect",
-//             {
-//
-//             }
-//         );
-//         return exports;
-//     }
-//
-//     explicit Connect(const Napi::CallbackInfo &info) : ObjectWrap(info) {
-//     }
-// };
+class Connect final : public Napi::ObjectWrap<Connect> {
+public:
+    static Napi::FunctionReference constructor;
 
-// static Connect CreateMySQLConnect(Napi::CallbackInfo &info) {
-// }
+    static Napi::Object Init(Napi::Env env, Napi::Object exports) {
+        Napi::Function func = DefineClass(
+                env,
+                "Connect",
+                {
 
+                }
+        );
+        constructor = Napi::Persistent(func);
+        constructor.SuppressDestruct();
+
+        exports.Set("Connect", func); // NOLINT
+        env.SetInstanceData<Napi::FunctionReference>(&constructor);
+        return exports;
+    }
+
+    explicit Connect(const Napi::CallbackInfo &info) : ObjectWrap(info) {
+    }
+};
+
+Napi::FunctionReference Connect::constructor;
+
+Napi::Value CreateMySQLConnect(const Napi::CallbackInfo &info) {
+    // todo 创建 MySQL 连接
+    return {};
+}
 
 Napi::Object Init(Napi::Env env, Napi::Object exports) {
     DateTime::Init(env, exports);
     ResultSet::Init(env, exports);
     PreparedStatement::Init(env, exports);
+    Connect::Init(env, exports);
+    Metadata::Init(env, exports);
+
+    exports.Set("CreateMySQLConnect", Napi::Function::New(env, &CreateMySQLConnect));
+
     return exports;
 }
 
