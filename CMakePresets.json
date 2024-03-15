@@ -2,10 +2,8 @@
   "version": 6,
   "configurePresets": [
     {
-      "name": "msvc_x64",
-      "displayName": "Visual Studio 17 2022 Release",
-      "generator": "Visual Studio 17 2022",
-      "architecture": "x64",
+      "name": "Windows_Ninja",
+      "generator": "Ninja",
       "binaryDir": "${sourceDir}/build",
       "environment": {
         "NAME": "kaoru",
@@ -13,6 +11,9 @@
         "JS_VER": "7.3.0"
       },
       "cacheVariables": {
+        "CMAKE_CXX_FLAGS": "/utf-8 /EHsc",
+        "CMAKE_C_FLAGS_DEBUG": "/MTd",
+        "CMAKE_CXX_FLAGS_DEBUG": "/MTd",
         "CMAKE_JS_VERSION": "$env{JS_VER}",
         "CMAKE_BUILD_TYPE": "Release",
         "CMAKE_MSVC_RUNTIME_LIBRARY": "MultiThreaded${dollar}<${dollar}<CONFIG:Debug>:Debug>",
