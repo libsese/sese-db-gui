@@ -1,5 +1,7 @@
 #include <napi.h>
 
+#define ENABLE_RETURN_CLASS
+
 #include <sese/db/DriverManager.h>
 
 #define EXPORT_FUNC(name) Napi::Value name(const Napi::CallbackInfo &info)
@@ -110,10 +112,10 @@ public:
                 {
                         INSTANCE_FUNC(reset),
                         INSTANCE_FUNC(next),
+                        INSTANCE_FUNC(getText),
                         INSTANCE_FUNC(getColumns),
                         INSTANCE_FUNC(getInteger),
                         INSTANCE_FUNC(getLong),
-                        INSTANCE_FUNC(getString),
                         INSTANCE_FUNC(getDouble),
                         INSTANCE_FUNC(getFloat),
                         INSTANCE_FUNC(getDateTime),
@@ -129,7 +131,8 @@ public:
     }
 
     explicit ResultSet(const Napi::CallbackInfo &info) : ObjectWrap(info) {
-        result_set_ = std::unique_ptr<sese::db::ResultSet>(static_cast<sese::db::ResultSet *>(info.Data()));
+        auto raw = info[0].As<Napi::External<sese::db::ResultSet>>();
+        this->result_set_ = std::unique_ptr<sese::db::ResultSet>(raw.Data());
     }
 
     EXPORT_FUNC(reset) {
@@ -159,7 +162,7 @@ public:
         return Napi::Number::New(info.Env(), static_cast<double>(res));
     }
 
-    EXPORT_FUNC(getString) {
+    EXPORT_FUNC(getText) {
         auto index = info[0].As<Napi::Number>().Uint32Value();
         auto res = result_set_->getString(index);
         return Napi::String::New(info.Env(), res.data());
@@ -280,6 +283,8 @@ public:
     }
 
     explicit PreparedStatement(const Napi::CallbackInfo &info) : ObjectWrap(info) {
+        auto raw = info[0].As<Napi::External<sese::db::PreparedStatement>>();
+        this->prepared_statement_ = std::unique_ptr<sese::db::PreparedStatement>(raw.Data());
     }
 
     EXPORT_FUNC(executeQuery) {
@@ -339,7 +344,7 @@ public:
 
     EXPORT_FUNC(setDateTime) {
         auto index = info[0].As<Napi::Number>().Uint32Value();
-        // auto value = info[1].As<Napi::ObjectWrap<DateTime>>();
+        // auto value = info[1].As<Napi::Object>();
         // auto res = prepared_statement_->setDateTime(index, *value);
         // return Napi::Boolean::New(info.Env(), res);
         // todo 内部实例化
@@ -362,6 +367,10 @@ private:
 
 Napi::FunctionReference PreparedStatement::constructor{};
 
+#undef INSTANCE_FUNC
+
+#define INSTANCE_FUNC(name) InstanceMethod(#name, &Connect::name)
+
 class Connect final : public Napi::ObjectWrap<Connect> {
 public:
     static Napi::FunctionReference constructor;
@@ -371,29 +380,139 @@ public:
                 env,
                 "Connect",
                 {
-
+                        INSTANCE_FUNC(executeQuery),
+                        INSTANCE_FUNC(executeUpdate)
                 }
         );
         constructor = Napi::Persistent(func);
         constructor.SuppressDestruct();
+        env.SetInstanceData<Napi::FunctionReference>(&constructor);
 
         exports.Set("Connect", func); // NOLINT
-        env.SetInstanceData<Napi::FunctionReference>(&constructor);
         return exports;
     }
 
     explicit Connect(const Napi::CallbackInfo &info) : ObjectWrap(info) {
+        auto raw = info[0].As<Napi::External<sese::db::DriverInstance>>();
+        this->instance_ = std::unique_ptr<sese::db::DriverInstance>(raw.Data());
     }
+
+    EXPORT_FUNC(executeQuery) {
+        auto sql = info[0].As<Napi::String>().Utf8Value();
+        auto result = this->instance_->executeQuery(sql.c_str());
+        if (!result) {
+            return {};
+        }
+
+        auto raw = result.release();
+        return ResultSet::constructor.New({Napi::External<sese::db::ResultSet>::New(info.Env(), raw)});
+    }
+
+    EXPORT_FUNC(executeUpdate) {
+        auto sql = info[0].As<Napi::String>().Utf8Value();
+        auto result = this->instance_->executeUpdate(sql.c_str());
+        return Napi::Number::New(info.Env(), static_cast<double>(result));
+    }
+
+    EXPORT_FUNC(createStatement) {
+        auto sql = info[0].As<Napi::String>().Utf8Value();
+        auto result = this->instance_->createStatement(sql.c_str());
+        if (!result) {
+            return {};
+        }
+
+        auto raw = result.release();
+        return PreparedStatement::constructor.New({Napi::External<sese::db::PreparedStatement>::New(info.Env(), raw)});
+    }
+
+    EXPORT_FUNC(getLastError) {
+        auto result = this->instance_->getLastError();
+        return Napi::Number::New(info.Env(), static_cast<double>(result));
+    }
+
+    EXPORT_FUNC(getLastErrorMessage) {
+        auto result = this->instance_->getLastErrorMessage();
+        return Napi::String::New(info.Env(), result);
+    }
+
+    EXPORT_FUNC(setAutoCommit) {
+        auto enable = info[0].As<Napi::Boolean>();
+        auto result = this->instance_->setAutoCommit(enable);
+        return Napi::Boolean::New(info.Env(), result);
+    }
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-result"
+
+    EXPORT_FUNC(getAutoCommit) {
+        bool status;
+        this->instance_->getAutoCommit(status);
+        return Napi::Boolean::New(info.Env(), status);
+    }
+
+#pragma clang diagnostic pop
+
+    EXPORT_FUNC(rollback) {
+        auto result = this->instance_->rollback();
+        return Napi::Boolean::New(info.Env(), result);
+    }
+
+    EXPORT_FUNC(commit) {
+        auto result = this->instance_->commit();
+        return Napi::Boolean::New(info.Env(), result);
+    }
+
+    EXPORT_FUNC(begin) {
+        auto result = this->instance_->begin();
+        return Napi::Boolean::New(info.Env(), result);
+    }
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-result"
+
+    EXPORT_FUNC(getInsertId) {
+        int64_t id;
+        this->instance_->getInsertId(id);
+        return Napi::Number::New(info.Env(), static_cast<double>(id));
+    }
+
+#pragma clang diagnostic pop
+
+private:
+    std::unique_ptr<sese::db::DriverInstance> instance_{};
 };
 
-Napi::FunctionReference Connect::constructor;
+Napi::FunctionReference Connect::constructor{};
 
 Napi::Value CreateMySQLConnect(const Napi::CallbackInfo &info) {
-    // todo 创建 MySQL 连接
-    return {};
+    auto string = info[0].As<Napi::String>().Utf8Value();
+    auto instance = sese::db::DriverManager::getInstance(sese::db::DatabaseType::MySql, string.c_str());
+    if (!instance) {
+        Napi::Error::New(info.Env(),
+                         "failed to call sese::db::DriverManager::getInstance").ThrowAsJavaScriptException();
+        return {};
+    }
+
+    if (instance->getLastError()) {
+        Napi::Error::New(info.Env(), instance->getLastErrorMessage()).ThrowAsJavaScriptException();
+        return {};
+    }
+
+    auto raw = instance.release();
+    return Connect::constructor.New({Napi::External<sese::db::DriverInstance>::New(info.Env(), raw)});
 }
 
+Napi::Value Add(const Napi::CallbackInfo &info) {
+    auto rv = info[0].As<Napi::Number>().Int64Value();
+    auto lv = info[1].As<Napi::Number>().Int64Value();
+    return Napi::Number::New(info.Env(), static_cast<double>(rv + lv));
+}
+
+#include <sese/util/Initializer.h>
+
 Napi::Object Init(Napi::Env env, Napi::Object exports) {
+    // sese::initCore(0, nullptr);
+
     DateTime::Init(env, exports);
     ResultSet::Init(env, exports);
     PreparedStatement::Init(env, exports);
@@ -401,6 +520,7 @@ Napi::Object Init(Napi::Env env, Napi::Object exports) {
     Metadata::Init(env, exports);
 
     exports.Set("CreateMySQLConnect", Napi::Function::New(env, &CreateMySQLConnect));
+    exports.Set("Add", Napi::Function::New(env, &Add));
 
     return exports;
 }

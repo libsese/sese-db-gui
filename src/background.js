@@ -55,6 +55,8 @@ async function createWindow() {
     return true
   })
 
+  win.setTitle('DBManager')
+
   return win
 }
 
@@ -86,6 +88,8 @@ app.on('ready', async () => {
     }
   }
   await createWindow()
+
+  app.setAppUserModelId("DBManager")
 })
 
 // Exit cleanly on request from parent process in development mode.

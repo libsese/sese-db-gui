@@ -6,6 +6,12 @@ sese_auto_find_vcpkg()
 
 project(sese-db-gui)
 set(CMAKE_CXX_STANDARD 17)
+if (WIN32)
+  set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /utf-8 /EHsc")
+  set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /MTd")
+  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
+endif ()
 
 file(GLOB_RECURSE SOURCE_FILE "${CMAKE_CURRENT_LIST_DIR}/addon/*.cpp")
 
@@ -15,6 +21,10 @@ add_library(DBExport SHARED ${SOURCE_FILE} ${CMAKE_JS_SRC})
 # 必须是全局的头文件位置
 # target_link_directories(DBExport PRIVATE ${CMAKE_JS_INC})
 target_link_libraries(DBExport PRIVATE ${CMAKE_JS_LIB})
+set_target_properties(DBExport PROPERTIES PREFIX "" SUFFIX ".node")
+
+find_package(sese CONFIG REQUIRED)
+target_link_libraries(DBExport PUBLIC Sese::Core)
 
 if (WIN32)
   target_link_libraries(DBExport PRIVATE "delayimp.lib")
@@ -32,16 +42,5 @@ add_definitions(-DNAPI_VERSION=6)
 add_definitions(-DNAPI_EXPERIMENTAL)
 add_definitions(-DNAPI_CPP_EXCEPTIONS)
 
-find_package(sese CONFIG REQUIRED)
-target_link_libraries(DBExport PUBLIC Sese::Core)
-
 add_executable(Export addon/Test.cpp)
-
 target_link_libraries(Export PRIVATE DBExport)
-
-set_target_properties(
-        Export PROPERTIES
-        ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/lib"
-        LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/lib"
-        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/lib"
-)
