@@ -40,7 +40,18 @@ public:
     }
 
     explicit DateTime(const Napi::CallbackInfo &info) : ObjectWrap(info) {
-        value_ = std::unique_ptr<sese::DateTime>(static_cast<sese::DateTime *>(info.Data()));
+        if (info.Length() != 1) {
+            Napi::Error::New(info.Env(), "failed to construct DateTime").ThrowAsJavaScriptException();
+            return;
+        }
+        if (info[0].IsExternal()) {
+            value_ = std::unique_ptr<sese::DateTime>(info[0].As<Napi::External<sese::DateTime>>().Data());
+        } else if (info[0].IsNumber()) {
+            auto timestamp = info[0].As<Napi::Number>().Int64Value() * 1000 * 1000;
+            value_ = std::make_unique<sese::DateTime>(timestamp, 0);
+        } else {
+            Napi::Error::New(info.Env(), "failed to construct DateTime").ThrowAsJavaScriptException();
+        }
     }
 
     EXPORT_FUNC(getYears) {
@@ -271,7 +282,15 @@ public:
                 "PreparedStatement",
                 {
                         INSTANCE_FUNC(executeQuery),
-                        INSTANCE_FUNC(executeUpdate)
+                        INSTANCE_FUNC(executeUpdate),
+                        INSTANCE_FUNC(setDouble),
+                        INSTANCE_FUNC(setFloat),
+                        INSTANCE_FUNC(setInteger),
+                        INSTANCE_FUNC(setLong),
+                        INSTANCE_FUNC(setText),
+                        INSTANCE_FUNC(setNull),
+                        INSTANCE_FUNC(setDateTime),
+                        INSTANCE_FUNC(getColumnType)
                 }
         );
         constructor = Napi::Persistent(func);
@@ -344,11 +363,9 @@ public:
 
     EXPORT_FUNC(setDateTime) {
         auto index = info[0].As<Napi::Number>().Uint32Value();
-        // auto value = info[1].As<Napi::Object>();
-        // auto res = prepared_statement_->setDateTime(index, *value);
-        // return Napi::Boolean::New(info.Env(), res);
-        // todo 内部实例化
-        return {};
+        auto datetime = DateTime::Unwrap(info[1].As<Napi::Object>());
+        auto res = prepared_statement_->setDateTime(index, *datetime->getValue());
+        return Napi::Boolean::New(info.Env(), res);
     }
 
     EXPORT_FUNC(getColumnType) {
@@ -381,7 +398,15 @@ public:
                 "Connect",
                 {
                         INSTANCE_FUNC(executeQuery),
-                        INSTANCE_FUNC(executeUpdate)
+                        INSTANCE_FUNC(executeUpdate),
+                        INSTANCE_FUNC(createStatement),
+                        INSTANCE_FUNC(getLastError),
+                        INSTANCE_FUNC(getLastErrorMessage),
+                        INSTANCE_FUNC(setAutoCommit),
+                        INSTANCE_FUNC(rollback),
+                        INSTANCE_FUNC(begin),
+                        INSTANCE_FUNC(commit),
+                        INSTANCE_FUNC(getInsertId)
                 }
         );
         constructor = Napi::Persistent(func);
