@@ -7,29 +7,18 @@
   </el-tab-pane>
 </template>
 
-<script>
-import {defineComponent, ref} from 'vue'
+<script setup lang="ts">
+import {ref} from 'vue'
 import {ElTabPane, ElTable} from 'element-plus'
 
-export default defineComponent({
-  components: {
-    ElTabPane,
-    ElTable
-  },
-  props: {
-    header: String
-  },
-  setup() {
-    const columns = ref([{}]);
-    const data = ref([{}]);
+interface table_column {
+  prop: string
+  label: string
+}
 
-    return {
-      columns,
-      data
-    }
-  }
-})
-
+const columns:table_column[] = [];
+const data = ref([{}]);
+const header = ref('数据')
 </script>
 
 <style scoped>

@@ -8,56 +8,34 @@
     "url": "https://github.com/libsese"
   },
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint",
-    "electron:build": "vue-cli-service electron:build",
-    "electron:serve": "vue-cli-service electron:serve",
-    "postinstall": "electron-builder install-app-deps && cmake-js rebuild",
-    "postuninstall": "electron-builder install-app-deps",
+    "dev": "node scripts/dev-server.js",
+    "build": "node scripts/build.js && electron-builder",
+    "build:win": "node scripts/build.js && electron-builder --win",
+    "build:mac": "node scripts/build.js && electron-builder --mac",
+    "build:linux": "node scripts/build.js && electron-builder --linux",
     "cmake:build": "cmake-js compile"
   },
-  "main": "background.js",
+  "cmake-js": {
+    "runtime": "electron",
+    "runtimeVersion": "27.1.0",
+    "arch": "x64"
+  },
+  "main": "build/main/main.js",
   "dependencies": {
     "bindings": "^1.5.0",
-    "core-js": "^3.8.3",
     "element-plus": "^2.6.1",
     "node-addon-api": "^8.0.0",
-    "path": "^0.12.7",
-    "vue": "^3.2.13"
+    "vue": "^3.3.13"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.16",
-    "@babel/eslint-parser": "^7.12.16",
-    "@vue/cli-plugin-babel": "~5.0.0",
-    "@vue/cli-plugin-eslint": "~5.0.0",
-    "@vue/cli-service": "~5.0.0",
+    "@types/bindings": "^1.5.5",
+    "@vitejs/plugin-vue": "^4.4.1",
+    "chalk": "^4.1.2",
+    "chokidar": "^3.5.3",
     "cmake-js": "^7.3.0",
-    "electron": "^13.0.0",
-    "electron-devtools-installer": "^3.2.0",
-    "eslint": "^7.32.0",
-    "eslint-plugin-vue": "^8.0.3",
-    "vue-cli-plugin-electron-builder": "~2.1.1",
-    "vue-devtools": "^5.1.4"
-  },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/vue3-essential",
-      "eslint:recommended"
-    ],
-    "parserOptions": {
-      "parser": "@babel/eslint-parser"
-    },
-    "rules": {}
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not dead",
-    "not ie 11"
-  ]
+    "electron": "^27.1.0",
+    "electron-builder": "^24.2.1",
+    "typescript": "^5.2.2",
+    "vite": "^4.5.0"
+  }
 }

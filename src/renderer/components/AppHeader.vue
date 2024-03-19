@@ -1,3 +1,12 @@
+<script setup lang="ts">
+import {ref} from 'vue'
+import {ElButton} from 'element-plus'
+
+const connect_text = ref('+')
+const connect_callback = ref(function (){})
+const test_callback = ref(function (){})
+</script>
+
 <template>
   <div class="app-header-box">
     <el-button type="primary" class="app-button" @click="connect_callback">
@@ -9,36 +18,12 @@
   </div>
 </template>
 
-<script>
-import {defineComponent} from 'vue'
-import {ElButton} from 'element-plus'
-
-export default defineComponent({
-  name: "AppHeader",
-  components: {
-    ElButton
-  },
-  props: {
-    connect_callback: Function,
-    test_callback: Function
-  },
-  setup() {
-    const connect_text = '+';
-
-    return {
-      connect_text
-    }
-  }
-})
-
-</script>
-
 <style scoped>
 .app-header-box {
   -webkit-app-region: drag;
   display: flex;
   align-items: center;
-  height: 31px;
+  height: 37px;
   background: #383a42;
 }
 
@@ -48,5 +33,4 @@ export default defineComponent({
   border: none;
   -webkit-app-region: no-drag;
 }
-
 </style>

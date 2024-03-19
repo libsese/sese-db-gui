@@ -1,3 +1,22 @@
+<script setup lang="ts">
+import {reactive, ref} from 'vue';
+import {ElDialog, ElButton, ElInput, ElForm, ElFormItem} from "element-plus";
+
+const conn_info = ref(reactive({
+  host: '127.0.0.1',
+  port: 3306,
+  db: '',
+  user: 'root',
+  pwd: ''
+}))
+
+const dialog_visible = ref(false)
+
+const disable = ref(true)
+
+const callback = ref(function (){})
+</script>
+
 <template>
   <el-dialog style="width: 280px;" v-model="dialog_visible" :modal="false" header="连接信息">
     <el-form label-width="auto">
@@ -20,43 +39,6 @@
     <el-button type="primary" @click="callback" :disabled="disable" style="align-items: end">连接</el-button>
   </el-dialog>
 </template>
-
-<script>
-import {defineComponent, reactive, ref} from 'vue';
-import {ElDialog, ElButton, ElInput, ElForm, ElFormItem} from "element-plus";
-
-export default defineComponent({
-  components: {
-    ElDialog,
-    ElButton,
-    ElInput,
-    ElForm,
-    ElFormItem
-  },
-  props: {
-    callback: Function
-  },
-  setup() {
-    const conn_info = reactive({
-      host: '127.0.0.1',
-      port: 3306,
-      db: '',
-      user: 'root',
-      pwd: ''
-    })
-
-    const dialog_visible = ref(false)
-
-    const disable = ref(true)
-
-    return {
-      conn_info,
-      disable,
-      dialog_visible
-    }
-  }
-})
-</script>
 
 <style scoped>
 

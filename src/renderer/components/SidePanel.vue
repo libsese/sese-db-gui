@@ -23,7 +23,7 @@
 <script>
 import {defineComponent, ref} from 'vue'
 import {ElTree, ElTooltip} from 'element-plus'
-import logo from '@/assets/logo.svg'
+import logo from '/logo.svg'
 
 export default defineComponent({
   name: 'SidePanel',
