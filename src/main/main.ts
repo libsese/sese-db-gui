@@ -14,7 +14,7 @@ function createWindow () {
       symbolColor: 'white',
       height: 35
     },
-    icon: join(__dirname, '/logo.png'),
+    icon: join(__dirname, 'static/logo.png'),
     webPreferences: {
       preload: join(__dirname, 'preload.js'),
       nodeIntegration: true,

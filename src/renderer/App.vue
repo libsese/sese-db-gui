@@ -3,6 +3,7 @@ import AppHeader from "./components/AppHeader.vue";
 import SidePanel from "./components/SidePanel.vue";
 import PagePanel from "./components/PagePanel.vue"
 import ConnectDialog from "./components/ConnectDialog.vue";
+import WelcomePage from "./components/WelcomePage.vue";
 import TablePage from "./components/TablePage.vue";
 </script>
 
@@ -14,12 +15,12 @@ import TablePage from "./components/TablePage.vue";
     <div id="app-main-panel-box">
       <AppHeader :connect_callback="show_dialog" :test_callback="test"/>
       <PagePanel ref="pages">
+        <welcome-page/>
         <TablePage ref="table" header="测试"/>
       </PagePanel>
       <ConnectDialog ref="dialog" :callback="do_connect"/>
     </div>
   </div>
-  <h1>H</h1>
 </template>
 
 <script lang="ts">

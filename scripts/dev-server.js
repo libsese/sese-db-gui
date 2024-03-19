@@ -38,14 +38,14 @@ async function startElectron() {
     }
 
     const args = [
-        Path.join(__dirname, '..', 'build', 'main', 'main.js'),
+        Path.join(__dirname, '..', 'dist/bundled', 'main', 'main.js'),
         rendererPort,
     ];
     electronProcess = ChildProcess.spawn(Electron, args);
     electronProcessLocker = false;
 
     electronProcess.stdout.on('data', data => {
-        if (data == EOL) {
+        if (data === EOL) {
             return;
         }
 
@@ -77,13 +77,13 @@ function copyStaticFiles() {
 }
 
 /*
-The working dir of Electron is build/main instead of src/main because of TS.
+The working dir of Electron is dist/bundled/main instead of src/main because of TS.
 tsc does not copy static files, so copy them over manually for dev server.
 */
 function copy(path) {
     FileSystem.cpSync(
         Path.join(__dirname, '..', 'src', 'main', path),
-        Path.join(__dirname, '..', 'build', 'main', path),
+        Path.join(__dirname, '..', 'dist/bundled', 'main', path),
         { recursive: true }
     );
 }

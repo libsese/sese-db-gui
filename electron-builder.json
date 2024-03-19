@@ -9,6 +9,7 @@
     "allowToChangeInstallationDirectory": true,
     "shortcutName": "DBManager"
   },
+  "icon": "src/main/static/logo.png",
   "win": {
     "target": "nsis"
   },
@@ -16,9 +17,9 @@
     "target": ["appimage"]
   },
   "files": [
-    "build/main/**/*",
+    "dist/bundled/main/**/*",
     {
-      "from": "build/renderer",
+      "from": "dist/bundled/renderer",
       "to": "renderer",
       "filter": ["**/*"]
     },
@@ -35,7 +36,7 @@
     "!config",
     "!README.md",
     "!scripts",
-    "!build/renderer",
+    "!dist/bundled/renderer",
     "!dist"
   ]
 }

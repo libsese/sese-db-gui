@@ -13,6 +13,7 @@
     "build:win": "node scripts/build.js && electron-builder --win",
     "build:mac": "node scripts/build.js && electron-builder --mac",
     "build:linux": "node scripts/build.js && electron-builder --linux",
+    "postinstall": "electron-builder install-app-deps && cmake-js rebuild",
     "cmake:build": "cmake-js compile"
   },
   "cmake-js": {
@@ -20,7 +21,7 @@
     "runtimeVersion": "27.1.0",
     "arch": "x64"
   },
-  "main": "build/main/main.js",
+  "main": "dist/bundled/main/main.js",
   "dependencies": {
     "bindings": "^1.5.0",
     "element-plus": "^2.6.1",

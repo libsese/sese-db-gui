@@ -1,12 +1,10 @@
 <script setup lang="ts">
 import {ElTabs} from 'element-plus';
-import WelcomePage from "./WelcomePage.vue";
 </script>
 
 <template>
   <div class="page-panel-box">
     <el-tabs type="border-card" class="page-box" :closable=true>
-      <welcome-page/>
       <slot/>
     </el-tabs>
   </div>
