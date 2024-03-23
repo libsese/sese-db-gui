@@ -1,7 +1,13 @@
 {
   "appId": "org.libsese.dbmanager",
+  "productName": "DBManager",
   "directories": {
     "output": "dist"
+  },
+  "extraResources": {
+    "from": "build/Release",
+    "to": "lib",
+    "filter": ["*.node", "*.dll", "*.so", "*.dylib"]
   },
   "nsis": {
     "oneClick": false,

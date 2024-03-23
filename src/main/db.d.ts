@@ -1,4 +1,4 @@
-declare module 'dbexport' {
+declare module 'db' {
   export function CreateMySQLConnect(connect_string: String): Connect
 
   export interface Datetime {

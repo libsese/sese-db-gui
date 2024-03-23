@@ -5,45 +5,43 @@ import PagePanel from "./components/PagePanel.vue"
 import ConnectDialog from "./components/ConnectDialog.vue";
 import WelcomePage from "./components/WelcomePage.vue";
 import TablePage from "./components/TablePage.vue";
+import { ref } from "vue";
+
+const dialog = ref<any>(null)
+
+const click_tree = () => {
+
+}
+
+const show_dialog = () => {
+  dialog.value.dialog_visible = true
+}
+
+const do_connect = () => {
+  const info = dialog.value.conn_info
+  window.electronAPI.open_db(info.host, parseInt(info.port), info.db, info.user, info.pwd)
+}
+
+const test = () => {
+}
+
 </script>
 
 <template>
   <div id="app-panel">
     <div id="app-side-panel-box">
-      <SidePanel ref="side" :click_callback="do_click_tree"/>
+      <SidePanel ref="side" :click_callback="click_tree" />
     </div>
     <div id="app-main-panel-box">
-      <AppHeader :connect_callback="show_dialog" :test_callback="test"/>
+      <AppHeader :connect_callback="show_dialog" :test_callback="test" />
       <PagePanel ref="pages">
-        <welcome-page/>
-        <TablePage ref="table" header="测试"/>
+        <welcome-page />
+        <TablePage ref="table" header="测试" />
       </PagePanel>
-      <ConnectDialog ref="dialog" :callback="do_connect"/>
+      <ConnectDialog ref="dialog" :callback="do_connect" />
     </div>
   </div>
 </template>
-
-<script lang="ts">
-
-function show_dialog() {
-  // this.$refs.dialog.dialog_visible = true;
-  // this.$refs.dialog.disable = false
-}
-
-function do_connect() {
-  // this.$refs.dialog.disable = true
-  // console.log(this.$refs.dialog.conn_info)
-}
-
-function do_click_tree() {
-  // const node = this.$refs.side.$refs.tree.getCurrentNode()
-  // console.log(node)
-}
-
-function test() {
-}
-
-</script>
 
 <style>
 #app {
@@ -57,7 +55,8 @@ function test() {
   overflow: hidden;
 }
 
-html, body {
+html,
+body {
   width: 100%;
   height: 100%;
   margin: 0;

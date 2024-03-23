@@ -1,7 +1,7 @@
 import {app, BrowserWindow, ipcMain, session, shell} from 'electron';
 import {join} from 'path';
 
-function createWindow () {
+function createWindow() {
   const mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
@@ -17,8 +17,9 @@ function createWindow () {
     icon: join(__dirname, 'static/logo.png'),
     webPreferences: {
       preload: join(__dirname, 'preload.js'),
-      nodeIntegration: true,
+      nodeIntegration: false,
       contextIsolation: true,
+      sandbox: false
     }
   });
 
@@ -26,8 +27,7 @@ function createWindow () {
     const rendererPort = process.argv[2];
     mainWindow.loadURL(`http://localhost:${rendererPort}`);
     mainWindow.webContents.openDevTools({mode: 'detach'})
-  }
-  else {
+  } else {
     mainWindow.loadFile(join(app.getAppPath(), 'renderer', 'index.html'));
   }
 }
@@ -44,6 +44,12 @@ app.whenReady().then(() => {
     })
   })
 
+  if (process.env.NODE_ENV === 'development') {
+    console.log(join(process.cwd(), '/build/Release'));
+  } else {
+    console.log(join(process.cwd(), '/resource/lib'));
+  }
+
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
@@ -57,6 +63,21 @@ app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') app.quit()
 });
 
+// Native API
+
 ipcMain.on('open_url', (event, url: string) => {
-  shell.openExternal(url).then(r => {})
+  shell.openExternal(url).then(r => {
+  })
+})
+
+const db = require('bindings')('DBExport')
+
+let conn
+
+ipcMain.on('open_db', (event, host: String, port: Number, db_name: String, user: String, pwd: String) => {
+  const conn_string = 'host=' + host + ';port=' + port + ';db=' + db_name + ';user=' + user + ';pwd=' + pwd + ';';
+  console.log(conn_string)
+
+  conn = db.CreateMySQLConnect(conn_string)
+  console.log(conn)
 })

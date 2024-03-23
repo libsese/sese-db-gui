@@ -2,7 +2,8 @@
  * Should match main/preload.ts for typescript support in renderer
  */
 export default interface ElectronApi {
-  sendMessage: (message: string) => void
+  open_url: (url: String) => void
+  open_db: (host: String, port: Number, db: String, user: String, pwd: String) => void
 }
 
 declare global {

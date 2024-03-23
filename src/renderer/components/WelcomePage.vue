@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// import {shell} from 'electron'
 import {ElTabPane, ElDivider} from 'element-plus'
 
 function open_url(url: string) {
