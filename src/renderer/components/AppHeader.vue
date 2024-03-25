@@ -36,12 +36,12 @@ defineProps({
   -webkit-app-region: drag;
   display: flex;
   align-items: center;
-  height: 37px;
+  height: 43px;
   background: #383a42;
 }
 
 .app-button {
-  height: 20px;
+  height: 27px;
   margin-left: 5px;
   border: none;
   -webkit-app-region: no-drag;

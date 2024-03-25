@@ -12,7 +12,7 @@ function createWindow() {
     titleBarOverlay: {
       color: '#383a42',
       symbolColor: 'white',
-      height: 35
+      height: 40
     },
     icon: join(__dirname, 'static/logo.png'),
     webPreferences: {
@@ -71,13 +71,22 @@ ipcMain.on('open_url', (event, url: string) => {
 })
 
 const db = require('bindings')('DBExport')
+import {Connect} from 'db';
 
-let conn
+let conn: Connect
 
 ipcMain.on('open_db', (event, host: String, port: Number, db_name: String, user: String, pwd: String) => {
   const conn_string = 'host=' + host + ';port=' + port + ';db=' + db_name + ';user=' + user + ';pwd=' + pwd + ';';
-  console.log(conn_string)
 
   conn = db.CreateMySQLConnect(conn_string)
-  console.log(conn)
 })
+
+ipcMain.handle('get_tables', (event, db_name: String) => {
+  const sql = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='"+ db_name + "';";
+  const res = conn.executeQuery(sql);
+  const tables: String[] = [];
+  while(res.next()) {
+    tables.push(res.getText(0))
+  }
+  return tables;
+}) 

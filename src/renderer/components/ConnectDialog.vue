@@ -5,13 +5,15 @@ import { reactive, ref } from 'vue'
 const conn_info = ref(reactive({
   host: '127.0.0.1',
   port: '3306',
-  db: '',
+  db: 'personnel',
   user: 'root',
-  pwd: '',
+  pwd: '2001',
 }))
 
 const dialog_visible = ref(false)
 const dialog_disable = ref(false)
+
+const message = ref('')
 
 defineProps({
   callback: {
@@ -24,7 +26,8 @@ defineProps({
 defineExpose({
   conn_info,
   dialog_visible,
-  dialog_disable
+  dialog_disable,
+  message
 })
 
 </script>
@@ -32,6 +35,7 @@ defineExpose({
 <template>
   <el-dialog style="width: 280px;" v-model:model-value="dialog_visible" :modal="false" header="连接信息">
     <el-form label-width="auto">
+      <el-text type="warning"> {{ message }} </el-text>
       <el-form-item label="主机">
         <el-input v-model="conn_info.host" clearable :disabled="dialog_disable" />
       </el-form-item>
