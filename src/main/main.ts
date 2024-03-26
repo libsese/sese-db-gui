@@ -59,9 +59,8 @@ app.on('window-all-closed', function () {
 
 // Native API
 
-ipcMain.on('open_url', (event, url: string) => {
-  shell.openExternal(url).then(r => {
-  })
+ipcMain.on('open_url', async (event, url: string) => {
+  await shell.openExternal(url)
 })
 
 // 模块重定位
