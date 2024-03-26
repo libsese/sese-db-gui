@@ -7,7 +7,6 @@ function open_url(url: string) {
 </script>
 
 <template>
-  <el-tab-pane label="欢迎">
     <h1>感谢您的选择</h1>
     <el-divider/>
     <h1>点击 + 连接到您的数据库</h1>
@@ -22,7 +21,6 @@ function open_url(url: string) {
       <img class="icon" alt="" src="/element-plus.png"
            @click="open_url('https://element-plus.org/')">
     </h3>
-  </el-tab-pane>
 </template>
 
 <style scoped>

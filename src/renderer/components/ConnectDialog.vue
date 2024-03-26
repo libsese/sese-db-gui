@@ -2,7 +2,15 @@
 import { ElDialog, ElButton, ElInput, ElForm, ElFormItem } from "element-plus";
 import { reactive, ref } from 'vue'
 
-const conn_info = ref(reactive({
+export interface ConnInfo {
+  host: string,
+  port: string,
+  db: string,
+  user: string,
+  pwd: string
+}
+
+const conn_info = ref<ConnInfo>(reactive({
   host: '127.0.0.1',
   port: '3306',
   db: 'personnel',

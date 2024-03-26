@@ -89,4 +89,14 @@ ipcMain.handle('get_tables', (event, db_name: String) => {
     tables.push(res.getText(0))
   }
   return tables;
-}) 
+})
+
+ipcMain.handle('get_table_headers', (event, db_name:String, tb_name:String) => {
+  const sql = "SELECT column_name FROM information_schema.columns WHERE table_schema = '" + db_name + "' AND table_name = '" + tb_name + "';";
+  const res = conn.executeQuery(sql);
+  const headers: String[] = [];
+  while(res.next()) {
+    headers.push(res.getText((0)))
+  }
+  return headers;
+})

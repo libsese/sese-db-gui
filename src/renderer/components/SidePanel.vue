@@ -14,46 +14,41 @@
       :props="tree_props"
       :data="data"
       default-expanded-keys="[0, 100]"
-      v-on:dblclick="click_callback"
+      v-on:dblclick="on_selected(tree.getCurrentNode())"
     >
     </el-tree>
   </div>
 </template>
 
-<script>
-import {defineComponent, ref} from 'vue'
+<script setup lang="ts">
+import {ref} from 'vue'
 import {ElTree, ElTooltip} from 'element-plus'
 import logo from '/logo.svg'
 
-export default defineComponent({
-  name: 'SidePanel',
-  components: {
-    ElTree,
-    ElTooltip
-  },
-  props: {
-    click_callback: Function
-  },
-  setup() {
-    const data = ref([
-      {
-        id: 0,
-        label: '尚未连接',
-        children: []
-      }
-    ])
+const tree = ref<any>(null);
 
-    const tree_props = {
-      label: 'label',
-      children: 'children',
-    }
+const tree_props = {
+  label: 'label',
+  children: 'children',
+}
 
-    return {
-      logo,
-      data,
-      tree_props
-    }
+const data = ref([
+  {
+    id: 0,
+    label: '尚未连接',
+    children: []
   }
+])
+
+defineProps({
+  on_selected: {
+    type: Function,
+    default: (item: any) => {}
+  }
+})
+
+defineExpose({
+  data
 })
 </script>
 

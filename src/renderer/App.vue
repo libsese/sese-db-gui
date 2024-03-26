@@ -2,16 +2,16 @@
 import AppHeader from "./components/AppHeader.vue";
 import SidePanel from "./components/SidePanel.vue";
 import PagePanel from "./components/PagePanel.vue"
-import ConnectDialog from "./components/ConnectDialog.vue";
-import WelcomePage from "./components/WelcomePage.vue";
-import TablePage from "./components/TablePage.vue";
+import ConnectDialog, {ConnInfo} from "./components/ConnectDialog.vue";
 import {ref} from "vue";
 
 const side = ref<any>(null)
 const dialog = ref<any>(null)
-var info
+const pages = ref<any>(null)
 
-function convertTreeNode(root: String, strings: String[]): any[] {
+let info: ConnInfo;
+
+function convert_tree_node(root: String, strings: String[]): any[] {
   console.log(strings)
   const result: any[] = [];
   const firstObject = {
@@ -33,8 +33,11 @@ function convertTreeNode(root: String, strings: String[]): any[] {
   return result;
 }
 
-const click_tree = () => {
-
+const on_selected = async (item: any) => {
+  if (item) {
+    const headers = await window.electronAPI.get_table_headers(info.db, item.label)
+    console.log(headers)
+  }
 }
 
 const show_dialog = () => {
@@ -58,10 +61,11 @@ const do_connect = async () => {
   dialog.value.dialog_visible = false;
 
   // 构建树节点
-  side.value.data = convertTreeNode(info.user + '@' + info.host, tables)
+  side.value.data = convert_tree_node(info.user + '@' + info.host, tables)
 }
 
 const test = () => {
+  console.log(pages.value.tabs);
 }
 
 </script>
@@ -69,14 +73,11 @@ const test = () => {
 <template>
   <div id="app-panel">
     <div id="app-side-panel-box">
-      <SidePanel ref="side" :click_callback="click_tree"/>
+      <SidePanel ref="side" :on_selected="on_selected"/>
     </div>
     <div id="app-main-panel-box">
       <AppHeader :connect_callback="show_dialog" :test_callback="test"/>
-      <PagePanel ref="pages">
-        <welcome-page/>
-        <TablePage ref="table" header="测试"/>
-      </PagePanel>
+      <PagePanel ref="pages"/>
       <ConnectDialog ref="dialog" :callback="do_connect"/>
     </div>
   </div>
