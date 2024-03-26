@@ -44,12 +44,6 @@ app.whenReady().then(() => {
     })
   })
 
-  if (process.env.NODE_ENV === 'development') {
-    console.log(join(process.cwd(), '/build/Release'));
-  } else {
-    console.log(join(process.cwd(), '/resource/lib'));
-  }
-
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
@@ -70,8 +64,21 @@ ipcMain.on('open_url', (event, url: string) => {
   })
 })
 
-const db = require('bindings')('DBExport')
-import {Connect} from 'db';
+// 模块重定位
+let module_path: string
+if (process.env.NODE_ENV === 'development') {
+  // D:/workspaces/sese-db-gui/build/Release/DBExport.node
+  console.log(module_path = join(process.cwd(), '/'));
+} else {
+  // D:/DBManager/resources/build/Release/DBExport.node
+  console.log(module_path = join(process.cwd(), '/resources'));
+}
+
+const db = require('bindings')({
+  bindings: 'DBExport',
+  module_root: module_path
+})
+import {Connect} from 'typings/db';
 
 let conn: Connect
 
