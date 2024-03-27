@@ -1,24 +1,33 @@
-# sese-db-gui
+# sese-db-gui (DEMO)
+
+How can we use native library in electron-like development. Just like this project.
+
+The base project template from [Deluze/electron-vue-template](https://github.com/Deluze/electron-vue-template)
+
+!> This project is only **Windows** for now!
+
+## Short intro
+
+UI: vue + vite + element plus + electron
+
+NATIVE: bindings + node-addon-api + cmake-js + vcpkg
+
+Nodejs Version: v20.11.1
 
 ## Project setup
-```
+
+```bash
 npm install
 ```
 
-### Compiles and hot-reloads for development
-```
-npm run serve
+## Run as dev mode
+
+```bash
+npm run dev
 ```
 
-### Compiles and minifies for production
-```
-npm run build
-```
+## Package Product
 
-### Lints and fixes files
+```bash
+npm run build:win
 ```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
