@@ -1,32 +1,29 @@
 <script setup lang="ts">
 import {ElButton} from 'element-plus'
+import {ref} from "vue";
+
+const connect_type = ref('primary')
+const connect_text = ref('+')
 
 defineProps({
-  connect_text: {
-    type: String,
-    default: '+'
-  },
   connect_callback: {
-    type: Function,
-    default: () => {
-    }
-  },
-  test_callback: {
     type: Function,
     default: () => {
     }
   }
 })
 
+defineExpose({
+  connect_text,
+  connect_type
+})
+
 </script>
 
 <template>
   <div class="app-header-box">
-    <el-button type="primary" class="app-button" v-on:click="() => connect_callback()">
+    <el-button :type="connect_type" class="app-button" v-on:click="() => connect_callback()">
       {{ connect_text }}
-    </el-button>
-    <el-button type="warning" class="app-button" v-on:click="() => test_callback()">
-      test
     </el-button>
   </div>
 </template>

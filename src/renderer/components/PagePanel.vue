@@ -4,7 +4,7 @@ import {ref} from "vue";
 import WelcomePage from "./WelcomePage.vue";
 import TablePage from "./TablePage.vue";
 
-declare type ComponentType = 'WelcomePage' | 'Table'
+declare type ComponentType = 'WelcomePage' | 'TablePage'
 
 interface TableComponent {
   title: string,
@@ -39,6 +39,7 @@ const switch_component = (component: string) => {
 
 const add_tab = (component: TableComponent) => {
   const new_tab_name = `${++tab_index}`
+  component.name = new_tab_name
   tabs.value.push(component)
   tabs_value.value = new_tab_name
 }

@@ -3,16 +3,18 @@ import AppHeader from "./components/AppHeader.vue";
 import SidePanel from "./components/SidePanel.vue";
 import PagePanel from "./components/PagePanel.vue"
 import ConnectDialog, {ConnInfo} from "./components/ConnectDialog.vue";
+import {TableColumn} from "./components/TablePage.vue";
 import {ref} from "vue";
 
-const side = ref<any>(null)
-const dialog = ref<any>(null)
-const pages = ref<any>(null)
+const header = ref<any>(null);
+const side = ref<any>(null);
+const dialog = ref<any>(null);
+const pages = ref<any>(null);
 
 let info: ConnInfo;
+let conn_status: boolean = false;
 
 function convert_tree_node(root: String, strings: String[]): any[] {
-  console.log(strings)
   const result: any[] = [];
   const firstObject = {
     id: 1,
@@ -33,15 +35,57 @@ function convert_tree_node(root: String, strings: String[]): any[] {
   return result;
 }
 
+function convert_table_header(headers: String[]): any[] {
+  const result: any[] = [];
+  for (let i = 0; i < headers.length; i++) {
+    const column: TableColumn = {
+      prop: headers[i].toString(),
+      label: headers[i].toString()
+    }
+    result.push(column);
+  }
+  console.log(result)
+  return result;
+}
+
+function convert_table_content(headers: string[], contents: string[]): any[] {
+  const result: any[] = [];
+  const rows = contents.length / headers.length;
+  for (let i = 0; i < rows; i++) {
+    const row: { [key: string]: string } = {}
+    for (let n = 0; n < headers.length; n++) {
+      const key = headers[n];
+      const value = contents[i * headers.length + n];
+      row[key] = value;
+    }
+    console.log(row);
+    result.push(row);
+  }
+  return result;
+}
+
 const on_selected = async (item: any) => {
-  if (item) {
+  if (item && conn_status) {
     const headers = await window.electronAPI.get_table_headers(info.db, item.label)
-    console.log(headers)
+    const contents = await window.electronAPI.get_table_contents(headers, item.label)
+    pages.value.add_tab({
+      title: item.label + " 预览",
+      component_name: "TablePage",
+      columns: convert_table_header(headers),
+      data: convert_table_content(headers, contents)
+    })
   }
 }
 
 const show_dialog = () => {
-  dialog.value.dialog_visible = true
+  if (conn_status) {
+    side.value.data = [{label: "尚未连接"}]
+    header.value.connect_text = '+';
+    header.value.connect_type = 'primary';
+    conn_status = false;
+  } else {
+    dialog.value.dialog_visible = true
+  }
 }
 
 const do_connect = async () => {
@@ -61,11 +105,12 @@ const do_connect = async () => {
   dialog.value.dialog_visible = false;
 
   // 构建树节点
-  side.value.data = convert_tree_node(info.user + '@' + info.host, tables)
-}
+  side.value.data = convert_tree_node(info.user + '@' + info.host, tables);
 
-const test = () => {
-  console.log(pages.value.tabs);
+  header.value.connect_text = '-';
+  header.value.connect_type = 'danger';
+
+  conn_status = true;
 }
 
 </script>
@@ -76,7 +121,7 @@ const test = () => {
       <SidePanel ref="side" :on_selected="on_selected"/>
     </div>
     <div id="app-main-panel-box">
-      <AppHeader :connect_callback="show_dialog" :test_callback="test"/>
+      <AppHeader ref="header" :connect_callback="show_dialog"/>
       <PagePanel ref="pages"/>
       <ConnectDialog ref="dialog" :callback="do_connect"/>
     </div>

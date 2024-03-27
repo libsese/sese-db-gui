@@ -81,28 +81,57 @@ import {Connect} from 'typings/db';
 
 let conn: Connect
 
-ipcMain.on('open_db', (event, host: String, port: Number, db_name: String, user: String, pwd: String) => {
+ipcMain.on('open_db', (event, host: string, port: Number, db_name: string, user: string, pwd: string) => {
   const conn_string = 'host=' + host + ';port=' + port + ';db=' + db_name + ';user=' + user + ';pwd=' + pwd + ';';
 
   conn = db.CreateMySQLConnect(conn_string)
 })
 
-ipcMain.handle('get_tables', (event, db_name: String) => {
-  const sql = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='"+ db_name + "';";
+ipcMain.handle('get_tables', (event, db_name: string) => {
+  const sql = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='" + db_name + "';";
   const res = conn.executeQuery(sql);
-  const tables: String[] = [];
-  while(res.next()) {
+  const tables: string[] = [];
+  while (res.next()) {
     tables.push(res.getText(0))
   }
   return tables;
 })
 
-ipcMain.handle('get_table_headers', (event, db_name:String, tb_name:String) => {
+ipcMain.handle('get_table_headers', (event, db_name: string, tb_name: string) => {
   const sql = "SELECT column_name FROM information_schema.columns WHERE table_schema = '" + db_name + "' AND table_name = '" + tb_name + "';";
   const res = conn.executeQuery(sql);
-  const headers: String[] = [];
-  while(res.next()) {
+  const headers: string[] = [];
+  while (res.next()) {
     headers.push(res.getText((0)))
   }
   return headers;
+})
+
+ipcMain.handle('get_table_contents', (event, tb_header: string[], tb_name: string) => {
+  let sql = "SELECT ";
+  let first = true;
+  for (let i = 0; i < tb_header.length; i++) {
+    const header = tb_header[i];
+    if (first) {
+      first = false;
+      sql += header;
+    } else {
+      sql += "," + header
+    }
+  }
+  sql += " FROM " + tb_name + " LIMIT 255;"
+  console.log(sql);
+  const res = conn.executeQuery(sql);
+  const length = res.getColumns();
+  const contents: string[] = [];
+  while (res.next()) {
+    for (let i = 0; i < length.valueOf(); i++) {
+      if (res.isNull(i)) {
+        contents.push('[NULL]')
+      } else {
+        contents.push(res.getText(i))
+      }
+    }
+  }
+  return contents;
 })

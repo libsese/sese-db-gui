@@ -1,5 +1,5 @@
 declare module 'typings/db' {
-  export function CreateMySQLConnect(connect_string: String): Connect
+  export function CreateMySQLConnect(connect_string: string): Connect
 
   export interface Datetime {
     getYears(): Number
@@ -30,9 +30,9 @@ declare module 'typings/db' {
 
     next(): Boolean
 
-    getText(index: Number): String
+    getText(index: Number): string
 
-    getColumns(index: Number): Number
+    getColumns(): Number
 
     getInteger(index: Number): Number
 
@@ -75,7 +75,7 @@ declare module 'typings/db' {
 
     setLong(index: Number, value: Number): Boolean
 
-    setText(index: Number, value: String): Boolean
+    setText(index: Number, value: string): Boolean
 
     setNull(index: Number): Boolean
 
@@ -85,15 +85,15 @@ declare module 'typings/db' {
   }
 
   export interface Connect {
-    executeQuery(sql: String): ResultSet
+    executeQuery(sql: string): ResultSet
 
-    executeUpdate(sql: String): Number
+    executeUpdate(sql: string): Number
 
-    createStatement(sql: String): PreparedStatement
+    createStatement(sql: string): PreparedStatement
 
     getLastError(): Number
 
-    getLastErrorMessage(): String
+    getLastErrorMessage(): string
 
     setAutoCommit(enable: Boolean): Boolean
 

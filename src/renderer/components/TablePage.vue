@@ -1,24 +1,30 @@
 <template>
-  <el-tab-pane :label=header>
-    <el-table class="allow-select" ref="table" table-layout='auto' empty-text="没有数据" v-model="data" :data=data
-              :highlight-current-row=true border stripe>
-      <el-table-column v-for="item in columns" :key="item.prop" :label="item.label" :prop="item.prop"/>
-    </el-table>
-  </el-tab-pane>
+  <el-table class="allow-select" ref="table" table-layout='auto' empty-text="没有数据" v-model="props.data" :data=props.data
+            :highlight-current-row=true border stripe>
+    <el-table-column v-for="item in columns" :key="item.prop" :label="item.label" :prop="item.prop"/>
+  </el-table>
 </template>
 
 <script setup lang="ts">
 import {ref} from 'vue'
-import {ElTabPane, ElTable} from 'element-plus'
+import {ElTable, ElButton} from 'element-plus'
 
-interface table_column {
+export interface TableColumn {
   prop: string
   label: string
 }
 
-const columns:table_column[] = [];
-const data = ref([{}]);
-const header = ref('数据')
+const props = defineProps({
+  columns: {
+    type: Array<TableColumn>,
+    default: []
+  },
+  data: {
+    type: ref<Array<any>>,
+    default: ref([{}])
+  }
+})
+
 </script>
 
 <style scoped>
