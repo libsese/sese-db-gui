@@ -13,9 +13,9 @@ export interface ConnInfo {
 const conn_info = ref<ConnInfo>(reactive({
   host: '127.0.0.1',
   port: '3306',
-  db: 'personnel',
+  db: '',
   user: 'root',
-  pwd: '2001',
+  pwd: '',
 }))
 
 const dialog_visible = ref(false)
