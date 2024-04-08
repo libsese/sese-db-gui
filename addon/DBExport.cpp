@@ -257,18 +257,18 @@ private:
     static int unknown_;
 };
 
-int Metadata::text_ = static_cast<int>(sese::db::MetadataType::Text);
-int Metadata::boolean_ = static_cast<int>(sese::db::MetadataType::Boolean);
-int Metadata::char_ = static_cast<int>(sese::db::MetadataType::Char);
-int Metadata::short_ = static_cast<int>(sese::db::MetadataType::Short);
-int Metadata::integer_ = static_cast<int>(sese::db::MetadataType::Integer);
-int Metadata::long_ = static_cast<int>(sese::db::MetadataType::Long);
-int Metadata::float_ = static_cast<int>(sese::db::MetadataType::Float);
-int Metadata::double_ = static_cast<int>(sese::db::MetadataType::Double);
-int Metadata::date_ = static_cast<int>(sese::db::MetadataType::Date);
-int Metadata::time_ = static_cast<int>(sese::db::MetadataType::Time);
-int Metadata::dateTime_ = static_cast<int>(sese::db::MetadataType::DateTime);
-int Metadata::unknown_ = static_cast<int>(sese::db::MetadataType::Unknown);
+int Metadata::text_ = static_cast<int>(sese::db::MetadataType::TEXT);
+int Metadata::boolean_ = static_cast<int>(sese::db::MetadataType::BOOLEAN);
+int Metadata::char_ = static_cast<int>(sese::db::MetadataType::CHAR);
+int Metadata::short_ = static_cast<int>(sese::db::MetadataType::SHORT);
+int Metadata::integer_ = static_cast<int>(sese::db::MetadataType::INTEGER);
+int Metadata::long_ = static_cast<int>(sese::db::MetadataType::LONG);
+int Metadata::float_ = static_cast<int>(sese::db::MetadataType::FLOAT);
+int Metadata::double_ = static_cast<int>(sese::db::MetadataType::DOUBLE);
+int Metadata::date_ = static_cast<int>(sese::db::MetadataType::DATE);
+int Metadata::time_ = static_cast<int>(sese::db::MetadataType::TIME);
+int Metadata::dateTime_ = static_cast<int>(sese::db::MetadataType::DATE_TIME);
+int Metadata::unknown_ = static_cast<int>(sese::db::MetadataType::UNKNOWN);
 
 #define INSTANCE_FUNC(name) InstanceMethod(#name, &PreparedStatement::name)
 
@@ -511,7 +511,7 @@ Napi::FunctionReference Connect::constructor{};
 
 Napi::Value CreateMySQLConnect(const Napi::CallbackInfo &info) {
     auto string = info[0].As<Napi::String>().Utf8Value();
-    auto instance = sese::db::DriverManager::getInstance(sese::db::DatabaseType::MySql, string.c_str());
+    auto instance = sese::db::DriverManager::getInstance(sese::db::DatabaseType::MY_SQL, string.c_str());
     if (!instance) {
         Napi::Error::New(info.Env(),
                          "failed to call sese::db::DriverManager::getInstance").ThrowAsJavaScriptException();
