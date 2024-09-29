@@ -38,6 +38,8 @@ execute_process(COMMAND node -p "require('node-addon-api').include"
 string(REPLACE "\n" "" NODE_ADDON_API_DIR ${NODE_ADDON_API_DIR})
 string(REPLACE "\"" "" NODE_ADDON_API_DIR ${NODE_ADDON_API_DIR})
 target_include_directories(DBExport PRIVATE ${NODE_ADDON_API_DIR})
+target_link_libraries(DBExport PRIVATE ${CMAKE_JS_LIB})
+
 add_definitions(-DNAPI_VERSION=6)
 add_definitions(-DNAPI_EXPERIMENTAL)
 add_definitions(-DNAPI_CPP_EXCEPTIONS)
